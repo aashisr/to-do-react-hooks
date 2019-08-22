@@ -4,13 +4,19 @@ import './App.css';
 
 // Create Todo component
 function Todo(props) {
-    console.log('Todo');
-    return <div className='todo'>{props.todo.text}</div>;
+    return (
+        <div style={{ textDecoration: props.todo.isCompleted ? 'line-through' : '' }} className='todo'>
+            {props.todo.text}
+            <div>
+                <button onClick={() => props.completeTodo(props.index)}>Complete</button>
+                <button onClick={() => props.deleteTodo(props.index)}>Delete</button>
+            </div>
+        </div>
+    );
 }
 
 // Create a form to add todo
 function TodoForm(props) {
-    console.log('Todo form');
     const [value, setValue] = useState('');
 
     const handleSubmit = (e) => {
@@ -31,7 +37,6 @@ function TodoForm(props) {
 }
 
 function App() {
-    console.log('App');
     // Create state which stores todos and provides a method to update the state
     // todos is the state
     // setTodos is a method to update the state
@@ -64,11 +69,25 @@ function App() {
         setTodos(newTodos);
     };
 
+    const completeTodo = (index) => {
+        const newTodos = [...todos];
+        // Mark the todo with given index as completed
+        newTodos[index].isCompleted = true;
+        // Set the new state
+        setTodos(newTodos);
+    };
+
+    const deleteTodo = (index) => {
+        const newTodos = [...todos];
+        newTodos.splice(index, 1);
+        setTodos(newTodos);
+    };
+
     return (
         <div className='app'>
             <div className='todo-list'>
                 {todos.map((todo, index) => (
-                    <Todo key={index} index={index} todo={todo} />
+                    <Todo key={index} index={index} todo={todo} completeTodo={completeTodo} deleteTodo={deleteTodo} />
                 ))}
                 <TodoForm addTodo={addTodo} />
             </div>
